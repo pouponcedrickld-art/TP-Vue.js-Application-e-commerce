@@ -1,3 +1,4 @@
+
 <script setup>
 import { RouterLink, RouterView  } from 'vue-router';
 import { ref ,onMounted } from 'vue';
@@ -22,6 +23,8 @@ console.log("https://dummyjson.com/products");
 
 
 <template>
+  <div>
+
 <h1>HomeView</h1>
 <h1>
     Bienvenue sur Poupon-showping
@@ -45,7 +48,8 @@ console.log("https://dummyjson.com/products");
 <div class="container">
 <RouterLink to="/ProductCard"> <button> Visiter nos pages </button></RouterLink>
 </div>
-
+    
+  </div>
 </template>
 
 

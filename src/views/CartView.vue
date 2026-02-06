@@ -1,44 +1,42 @@
-
-
 <script setup>
-import { ref ,onMounted  } from 'vue';
-import { useRoute , RouterLink } from 'vue-router';
-// import ProductCard from '@/components/ProductCard.vue';
-const emit = defineEmits(['Lesproduits']);
+import { computed } from 'vue';
 
-const route = useRoute();
-const data = ref(null);
+const props = defineProps(['panier']);
+const emit = defineEmits(['supprimer']);
 
-const getData  = async () => {
-  const id = route.params.id ;
-   const res = await fetch(`https://dummyjson.com/products/${id}`);
-    data.value = await res.json(); 
-};
-onMounted(getData);
-
-console.log("https://dummyjson.com/products");
-
+// Calcul dynamique du total
+const totalGeneral = computed(() => {
+  return props.panier.reduce((acc, item) => acc + (item.price * item.quantite), 0);
+});
 </script>
 
 <template>
-  <div v-if="data" class="container">
-    <h1>{{ data.title }}</h1>
-    <img :src="data.thumbnail" />
-    <p>Prix : {{ data.price }}€</p>
+  <div class="cart-container">
+    <h1>Mon Panier</h1>
 
-    <div class="button-group">
-      <RouterLink to="/payementForm">
-        <button class="btn-pay">Payer</button>
-      </RouterLink>
-      <RouterLink to="/productCard">
-        <button class="btn-back">Retour</button>
-      </RouterLink>
+    <div v-if="panier.length > 0">
+      <div v-for="item in panier" :key="item.id" class="cart-item">
+        <img :src="item.thumbnail" width="50">
+        <span>{{ item.title }} (x{{ item.quantite }})</span>
+        <span>{{ item.price * item.quantite }} €</span>
+        <button @click="emit('supprimer', item.id)">❌</button>
+      </div>
+      <div class="total">
+        <h3>Total : {{ totalGeneral.toFixed(2) }} €</h3>
+        <RouterLink to="/payementForm">
+          <button class="btn-pay">Passer au paiement</button>
+        </RouterLink>
+      </div>
+    </div>
+
+    <div v-else>
+      <p>Votre panier est vide.</p>
+    <RouterLink  to="/productCard"> <p>Retourner à la boutique</p> </RouterLink>
+
     </div>
   </div>
-  <div v-else>Chargement...</div>
 </template>
-
-<style scoped>
+<!-- <style scoped>
 /* Ta logique de centrage */
 .container {
   display: flex;
@@ -69,7 +67,7 @@ img {
 button {
   padding: 12px 30px;
   background-color: #4f46e5;
-  color: white;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -87,8 +85,45 @@ button:hover {
 }
 
 a { text-decoration: none; }
+span  {
+  color: black;
 
+}
+p{ color: black;}
+ h3 {
+  color: black;
+
+}
+</style> -->
+<style scoped>
+.cart-container, .form-container {
+  background: #111 !important;
+  border: 1px solid #222;
+  color: white;
+  padding: 50px;
+  max-width: 600px;
+}
+
+input {
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  color: white !important;
+  padding: 15px !important;
+  border-radius: 0 !important;
+}
+
+.btn-pay {
+  background: #d4af37 !important; /* Bouton Or */
+  color: black !important;
+  border: none !important;
+  font-weight: 900 !important;
+}
+
+.total h3 {
+  border-top: 1px solid #d4af37;
+  padding-top: 20px;
+  color: #d4af37;
+}
 </style>
-
 
 

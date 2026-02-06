@@ -1,7 +1,32 @@
+
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
+//////////////////////////////////////
 
+import { reactive } from 'vue';
 
+const panier = reactive([]);
+
+// Fonction pour ajouter un produit
+const ajouterAuPanier = (produit) => {
+  const existant = panier.find(item => item.id === produit.id);
+  if (existant) {
+    existant.quantite++;
+  } else {
+    panier.push({ ...produit, quantite: 1 });
+  }
+};
+
+// Ajouter cette fonction dans App.vue
+const viderPanier = () => {
+  panier.splice(0, panier.length);
+};
+// Fonction pour supprimer un produit
+const supprimerDuPanier = (id) => {
+  const index = panier.findIndex(item => item.id === id);
+  panier.splice(index, 1);
+};
+/////////////////////////////////////
 const menu = [
   { path: '/' ,             title: 'HomeView'},
   { path: '/productsView' , title: 'ProductsView'},
@@ -26,12 +51,18 @@ const menu = [
       style="margin-right: 10px;"
   > {{ item.title }} </RouterLink>
 </nav>
-
-
-<RouterView /> 
+<!-- //////////////////// -->
+<RouterView 
+  :panier="panier" 
+  @ajouter="ajouterAuPanier"
+  @supprimer="supprimerDuPanier"
+  @valider-paiement="viderPanier"
+/>
+<!-- ///////////////////////////// -->
 </template>
 
-<style scoped>
+<!-- <style scoped>
+
 .router-link-exact-active {
   background-color: #1b395094;
   color: #ffffff
@@ -41,7 +72,7 @@ nav{
   justify-content: space-around;
 }
 :global(body) {
-    background-color: #e6b7b717;  
+    background-color: #e6b7b700;  
     /* background-color: #750b0b10;   */
    /* background-color: #111;  */
   color: #eee;
@@ -57,6 +88,7 @@ nav{
  }
 
 nav {
+  height: 4vh;
   background: #1e1e1e;
   padding: 15px 40px;
   border-bottom: 1px solid #333;
@@ -86,12 +118,12 @@ hr {
 nav {
   /* Effet Glassmorphism */
   background: rgba(30, 30, 30, 0.7); /* Couleur sombre mais transparente */
-  backdrop-filter: blur(10px);       /* Flou de l'arrière-plan */
-  -webkit-backdrop-filter: blur(10px); /* Compatibilité Safari */
+  /* backdrop-filter: blur(10px);       Flou de l'arrière-plan */
+  /* -webkit-backdrop-filter: blur(10px); Compatibilité Safari */
   
   /* Bordure "reflet de verre" */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); */
   
   /* Fixation en haut (optionnel mais recommandé pour l'effet de verre) */
   position: sticky;
@@ -113,5 +145,44 @@ nav a.router-link-active {
   border-radius: 4px;
   border-bottom: 2px solid #b1361e;
 }
-</style>
+</style> -->
 
+<style>
+/* Reset et Thème Sombre Global */
+:global(body) {
+  background-color: #0a0a0a !important; /* Noir profond de l'image */
+  color: #ffffff !important;
+  margin: 0;
+  font-family: 'Playfair Display', serif; /* Style luxueux */
+}
+
+:global(h1, h2, h3) {
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 700;
+}
+
+/* Barre de Navigation "Grance Style" */
+nav {
+  background: rgba(10, 10, 10, 0.95) !important;
+  border-bottom: 1px solid #222 !important;
+  padding: 25px 50px !important;
+  display: flex;
+  justify-content: center !important;
+  gap: 40px !important;
+}
+
+nav a {
+  color: #888 !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 2px;
+  transition: 0.4s;
+}
+
+nav a:hover, nav a.router-link-active {
+  color: #d4af37 !important; /* Couleur Or/Bronze de l'image */
+  background: none !important;
+  border-bottom: none !important;
+}
+</style>

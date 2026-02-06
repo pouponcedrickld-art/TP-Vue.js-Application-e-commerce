@@ -1,32 +1,32 @@
+
 <script setup>
-import { ref ,onMounted  } from 'vue';
+import { ref, onMounted } from 'vue';
 
+const data = ref(null);
+defineProps(['panier']);
+// ON DÉCLARE TOUS LES EMITS ICI EN UNE SEULE FOIS
+const emit = defineEmits(['Lesproduits', 'ajouter']); 
 
-const data = ref(null)
-const emit = defineEmits(['Lesproduits']);
-
-const getData  = async () => {
-    try {
-    const response  =  await fetch ('https://dummyjson.com/products') ; 
+const getData = async () => {
+  try {
+    const response = await fetch('https://dummyjson.com/products'); 
     const res = await response.json(); 
-    data.value = res.products ; 
-    }catch(err) {
-console.log("error survenu au niveau du fetch ", err);
-    }
-}
+    data.value = res.products; 
+  } catch(err) {
+    console.log("Erreur survenue au niveau du fetch", err);
+  }
+};
+
 onMounted(getData);
-
-
-
 console.log("https://dummyjson.com/products");
-
-
 </script>
 
 
 <template>
+  <div>
+<!-- 
   <p>Page liste des produits</p>
-  <h1>productCard</h1>
+  <h1>productCard</h1> -->
 
   <section class="container" v-if="data">
       <div v-for="tab in data" :key="tab.id" class="card">
@@ -38,13 +38,17 @@ console.log("https://dummyjson.com/products");
             <button @click="emit('Lesproduits', tab)">Details</button>
           </RouterLink>
           
-          <RouterLink :to="`/CartView/${tab.id}`">
+          <!-- <RouterLink :to="`/CartView/${tab.id}`">
             <button @click="emit('Lesproduits', tab)">Ajouter</button>
-          </RouterLink>
+          </RouterLink> -->
+          <!-- /////////////////////// -->
+         <button @click="emit('ajouter', tab)">Ajouter au panier</button>
+           <!-- /////////////////////// -->
       </div>
   </section>
+    </div>
 </template>
-
+<!-- 
 <style scoped>
 /* Grille principale */
 .container {
@@ -125,5 +129,73 @@ button:hover {
 /* Supprime le soulignement des liens */
 a {
   text-decoration: none;
+}
+</style> -->
+
+<style scoped>
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  padding: 40px;
+  background: #0a0a0a;
+}
+
+.card {
+  background: #111; /* Gris très foncé */
+  border: 1px solid #222;
+  padding: 0; /* Image plein bord */
+  border-radius: 0; /* Look plus pro/luxe */
+  transition: 0.5s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: #d4af37; /* Lueur dorée au survol */
+  transform: translateY(-10px);
+}
+
+.card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  filter: grayscale(20%); /* Effet artistique */
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin: 15px 0 5px 0;
+  color: #fff;
+}
+
+p {
+  color: #d4af37; /* Prix en Or */
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Boutons de l'image */
+button {
+  width: 100%;
+  padding: 15px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #333;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* Bouton Ajouter (Accents Or) */
+button:last-of-type {
+  border-top: 1px solid #222;
+  background: #1a1a1a;
+  color: #d4af37;
 }
 </style>
